@@ -1,0 +1,95 @@
+import { Anime, AnimeDetails, JikanPaginatedResponse, StreamingService } from '../types';
+
+const API_BASE_URL = 'https://api.jikan.moe/v4';
+
+interface JikanResponse<T> {
+  data: T;
+}
+
+export const fetchAnimeData = async (endpoint: string, limit?: number): Promise<Anime[]> => {
+  try {
+    const url = new URL(`${API_BASE_URL}${endpoint}`);
+    if (limit) {
+      url.searchParams.set('limit', limit.toString());
+    }
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error(`Jikan API error: ${response.statusText}`);
+    }
+    const data: JikanResponse<Anime[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching anime list:', error);
+    return [];
+  }
+};
+
+export const fetchAnimeDetails = async (id: number): Promise<AnimeDetails | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/anime/${id}`);
+     if (!response.ok) {
+      throw new Error(`Jikan API error: ${response.statusText}`);
+    }
+    const data: JikanResponse<AnimeDetails> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching details for anime ID ${id}:`, error);
+    return null;
+  }
+};
+
+export const fetchPaginatedAnimeData = async (endpoint: string, page: number, limit: number = 16): Promise<JikanPaginatedResponse | null> => {
+  try {
+    const url = new URL(`${API_BASE_URL}${endpoint}`);
+    url.searchParams.set('page', page.toString());
+    url.searchParams.set('limit', limit.toString());
+
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error(`Jikan API error: ${response.statusText}`);
+    }
+    const data: JikanPaginatedResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching paginated anime list:', error);
+    return null;
+  }
+};
+
+export const searchAnime = async (query: string, page: number = 1, limit: number = 16): Promise<JikanPaginatedResponse | null> => {
+  if (!query) return null;
+  try {
+    const url = new URL(`${API_BASE_URL}/anime`);
+    url.searchParams.set('q', query);
+    url.searchParams.set('page', page.toString());
+    url.searchParams.set('limit', limit.toString());
+    url.searchParams.set('sfw', 'true');
+
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error(`Jikan API error: ${response.statusText}`);
+    }
+    const data: JikanPaginatedResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error searching anime with query "${query}":`, error);
+    return null;
+  }
+};
+
+export const fetchAnimeStreaming = async (id: number): Promise<StreamingService[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/anime/${id}/streaming`);
+    if (!response.ok) {
+      if (response.status === 404) {
+          return []; // Not an error, just no streaming info available.
+      }
+      throw new Error(`Jikan API error: ${response.statusText}`);
+    }
+    const data: JikanResponse<StreamingService[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching streaming info for anime ID ${id}:`, error);
+    return [];
+  }
+};
