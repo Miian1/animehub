@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { searchAnime } from '../services/jikanApi';
 import { Anime, PaginationInfo } from '../types';
 import AnimeCard from '../components/AnimeCard';
@@ -117,6 +116,9 @@ const SearchPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Link to="/" className="inline-block mb-4 text-gray-400 hover:text-[#e94560] transition-colors">
+        <i className="fas fa-chevron-left mr-2"></i>Back to Home
+      </Link>
       <h1 className="text-3xl font-bold text-[#e94560] mb-8">{pageTitle}</h1>
       {renderContent()}
       {selectedAnime && <AnimeDetailModal anime={selectedAnime} onClose={handleCloseModal} />}
