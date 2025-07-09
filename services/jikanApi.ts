@@ -1,5 +1,5 @@
 
-import { Anime, AnimeDetails, JikanPaginatedResponse, StreamingService, Genre } from '../types';
+import { Anime, AnimeDetails, JikanPaginatedResponse, StreamingService, Genre, ScheduleEntry, NewsArticle, Review } from '../types';
 
 const API_BASE_URL = 'https://api.jikan.moe/v4';
 
@@ -13,6 +13,7 @@ export const fetchAnimeData = async (endpoint: string, limit?: number): Promise<
     if (limit) {
       url.searchParams.set('limit', limit.toString());
     }
+    url.searchParams.set('sfw', 'true');
     const response = await fetch(url.toString());
     if (!response.ok) {
       throw new Error(`Jikan API error: ${response.statusText}`);
@@ -39,17 +40,18 @@ export const fetchAnimeDetails = async (id: number): Promise<AnimeDetails | null
   }
 };
 
-export const fetchPaginatedAnimeData = async (endpoint: string, page: number, limit: number = 16): Promise<JikanPaginatedResponse | null> => {
+export const fetchPaginatedAnimeData = async (endpoint: string, page: number, limit: number = 16): Promise<JikanPaginatedResponse<Anime> | null> => {
   try {
     const url = new URL(`${API_BASE_URL}${endpoint}`);
     url.searchParams.set('page', page.toString());
     url.searchParams.set('limit', limit.toString());
+    url.searchParams.set('sfw', 'true');
 
     const response = await fetch(url.toString());
     if (!response.ok) {
       throw new Error(`Jikan API error: ${response.statusText}`);
     }
-    const data: JikanPaginatedResponse = await response.json();
+    const data: JikanPaginatedResponse<Anime> = await response.json();
     return data;
   } catch (error) {
     console.error('Error fetching paginated anime list:', error);
@@ -57,7 +59,7 @@ export const fetchPaginatedAnimeData = async (endpoint: string, page: number, li
   }
 };
 
-export const searchAnime = async (query: string, page: number = 1, limit: number = 16): Promise<JikanPaginatedResponse | null> => {
+export const searchAnime = async (query: string, page: number = 1, limit: number = 16): Promise<JikanPaginatedResponse<Anime> | null> => {
   if (!query) return null;
   try {
     const url = new URL(`${API_BASE_URL}/anime`);
@@ -70,7 +72,7 @@ export const searchAnime = async (query: string, page: number = 1, limit: number
     if (!response.ok) {
       throw new Error(`Jikan API error: ${response.statusText}`);
     }
-    const data: JikanPaginatedResponse = await response.json();
+    const data: JikanPaginatedResponse<Anime> = await response.json();
     return data;
   } catch (error) {
     console.error(`Error searching anime with query "${query}":`, error);
@@ -108,3 +110,70 @@ export const fetchAnimeGenres = async (): Promise<Genre[]> => {
     return [];
   }
 };
+
+export const fetchRecentEpisodes = async (page: number = 1): Promise<JikanPaginatedResponse<ScheduleEntry> | null> => {
+    try {
+        const url = new URL(`${API_BASE_URL}/watch/episodes`);
+        url.searchParams.set('page', page.toString());
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+            throw new Error(`Jikan API error: ${response.statusText}`);
+        }
+        const data: JikanPaginatedResponse<ScheduleEntry> = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching recent episodes:', error);
+        return null;
+    }
+};
+
+export const fetchAnimeNews = async (id: number, page: number = 1): Promise<JikanPaginatedResponse<NewsArticle> | null> => {
+    try {
+        const url = new URL(`${API_BASE_URL}/anime/${id}/news`);
+        url.searchParams.set('page', page.toString());
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+            if (response.status === 404) return null;
+            throw new Error(`Jikan API error: ${response.statusText}`);
+        }
+        const data: JikanPaginatedResponse<NewsArticle> = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Error fetching news for anime ID ${id}:`, error);
+        return null;
+    }
+}
+
+export const fetchTopReviews = async (page: number = 1): Promise<JikanPaginatedResponse<Review> | null> => {
+    try {
+        const url = new URL(`${API_BASE_URL}/top/reviews`);
+        url.searchParams.set('page', page.toString());
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+            throw new Error(`Jikan API error: ${response.statusText}`);
+        }
+        const data: JikanPaginatedResponse<Review> = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching top reviews:', error);
+        return null;
+    }
+}
+
+export const fetchRecentReviews = async (page: number = 1): Promise<JikanPaginatedResponse<Review> | null> => {
+    try {
+        const url = new URL(`${API_BASE_URL}/reviews/anime`);
+        url.searchParams.set('page', page.toString());
+        url.searchParams.set('preliminary', 'false');
+        url.searchParams.set('spoilers', 'false');
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+            throw new Error(`Jikan API error: ${response.statusText}`);
+        }
+        const data: JikanPaginatedResponse<Review> = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching recent reviews:', error);
+        return null;
+    }
+}
