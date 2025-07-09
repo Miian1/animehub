@@ -50,3 +50,10 @@ export interface StreamingService {
   name: string;
   url: string;
 }
+
+export interface Genre {
+    mal_id: number;
+    name: string;
+    url: string;
+    count: number;
+}
