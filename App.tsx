@@ -12,6 +12,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AllAnimePage from './pages/AllAnimePage';
 import SearchPage from './pages/SearchPage';
 import GenrePage from './pages/GenrePage';
+import SchedulePage from './pages/SchedulePage';
+import NewsPage from './pages/NewsPage';
+import ReviewsPage from './pages/ReviewsPage';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -28,6 +31,9 @@ const AppContent: React.FC = () => {
           <Route path="/browse" element={<AllAnimePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/genre/:id" element={<GenrePage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
           <Route 
             path="/profile" 
             element={
