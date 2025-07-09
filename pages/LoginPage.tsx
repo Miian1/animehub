@@ -28,7 +28,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen -mt-[70px]">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md p-8 space-y-8 bg-[#1a1a2e] rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center text-[#e94560]">Login to AnimeHub</h2>
         {error && <p className="text-red-500 bg-red-100 p-3 rounded text-center">{error}</p>}
