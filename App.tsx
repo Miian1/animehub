@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AllAnimePage from './pages/AllAnimePage';
 import SearchPage from './pages/SearchPage';
+import GenrePage from './pages/GenrePage';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -26,6 +27,7 @@ const AppContent: React.FC = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/browse" element={<AllAnimePage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/genre/:id" element={<GenrePage />} />
           <Route 
             path="/profile" 
             element={
