@@ -18,12 +18,12 @@ import ReviewsPage from './pages/ReviewsPage';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const showFooter = !['/login', '/signup'].includes(location.pathname);
+  const showLayout = !['/login', '/signup'].includes(location.pathname);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0f0f1a] text-white">
-      <Navbar />
-      <main className="flex-grow pt-[70px]">
+      {showLayout && <Navbar />}
+      <main className={`flex-grow ${showLayout ? 'pt-[70px]' : ''}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -44,7 +44,7 @@ const AppContent: React.FC = () => {
           />
         </Routes>
       </main>
-      {showFooter && <Footer />}
+      {showLayout && <Footer />}
     </div>
   );
 };
