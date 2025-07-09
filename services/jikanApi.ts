@@ -1,4 +1,5 @@
-import { Anime, AnimeDetails, JikanPaginatedResponse, StreamingService } from '../types';
+
+import { Anime, AnimeDetails, JikanPaginatedResponse, StreamingService, Genre } from '../types';
 
 const API_BASE_URL = 'https://api.jikan.moe/v4';
 
@@ -90,6 +91,20 @@ export const fetchAnimeStreaming = async (id: number): Promise<StreamingService[
     return data.data;
   } catch (error) {
     console.error(`Error fetching streaming info for anime ID ${id}:`, error);
+    return [];
+  }
+};
+
+export const fetchAnimeGenres = async (): Promise<Genre[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/genres/anime`);
+    if (!response.ok) {
+      throw new Error(`Jikan API error: ${response.statusText}`);
+    }
+    const data: JikanResponse<Genre[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching anime genres:', error);
     return [];
   }
 };
