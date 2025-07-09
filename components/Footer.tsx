@@ -8,7 +8,8 @@ const Footer: React.FC = () => {
         <div>
           <h3 className="text-lg font-bold text-[#e94560] mb-4">About AnimeHub</h3>
           <p className="text-sm text-gray-400">
-            Your ultimate destination for anime streaming, news, and community. Discover thousands of anime titles and join our growing community.
+            AnimeHub is your ultimate destination for everything anime — from high-quality streaming and the latest news to a vibrant fan community. Dive into a world of thousands of anime titles, explore curated content, and connect with fellow fans from around the globe.
+Built with passion by MIAN, AnimeHub is more than just a platform — it's where anime lives.
           </p>
         </div>
         <div>
